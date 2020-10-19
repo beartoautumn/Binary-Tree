@@ -1,0 +1,13 @@
+import pandas as pd, numpy as np
+normal_values = pd.Series(np.random.normal(loc=0,scale=50,size=1000)).sort_values().tail(100)
+df=pd.DataFrame()
+n_min,n_max=normal_values.min(),normal_values.max()
+while True:
+    if normal_values.count()<=5:
+        break
+    df_temp=pd.DataFrame([[n_min, n_max, normal_values.count()]],columns=["min","max","node"])
+    df=df.append(df_temp, ignore_index=True)
+    d=(n_max-n_min)/2
+    n_max=n_min+d
+    normal_values=normal_values[normal_values<=n_max]
+    df.to_csv("答案.txt", index=False)
