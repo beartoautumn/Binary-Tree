@@ -1,0 +1,28 @@
+# Binary-Tree
+Python Little Challenge
+import pandas as pd, numpy as np
+normal_values = pd.Series(np.random.normal(loc = 0,scale = 50,size = 1000)).sort_values().tail(100)
+df=pd.DataFrame()
+n_min,n_max=normal_values.describe()[["min","max"]]
+df=df.append([[[n_min,n_max]]])
+n=0
+to_break=False
+while True:
+    temp_list=[]
+    for i in range(2**n):
+        n_mon,n_max=df.loc[n,i]
+        n_mean=(n_min+n_max)/2
+        
+        left_values=normal_values[(normal_values>=n_min)&(normal_values<=n_mean)]
+        right_values=normal_values[(normal_values>=n_mean)&(normal_values<=n_max)]
+        left_values_min_max=[np.nan,np.nan] if left_values.count()<=5 else [left_values.min(),left_values.max()]
+        right_values_min_max=[np.nan,np.nan] if right_values.count()<=5 else [right_values.min(),right_values.max()]
+        
+        temp_list+=[left_values_min_max, right_values_min_max]
+        
+    if pd.DataFrame(temp_list).sum().sum()==0:
+        break
+        
+    df=df.append([temp_list], ignore_index=True)
+    n+=1
+df
